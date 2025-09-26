@@ -1,4 +1,4 @@
-# data_processing/preprocess.py (FINAL VERSION v2)
+# data_processing/preprocess.py (FINAL CORRECTED VERSION)
 
 import os
 import cv2
@@ -47,8 +47,6 @@ def process_mpiigaze(base_path):
     all_labels = []
     current_sequence = []
     
-    # --- THIS IS THE UPDATED LINE ---
-    # Use recursive search to find all .jpg files in all subdirectories
     image_paths = glob.glob(os.path.join(base_path, '**', '*.jpg'), recursive=True)
     
     print(f"Found {len(image_paths)} images to process in MPIIGaze.")
@@ -78,13 +76,15 @@ def process_mpiigaze(base_path):
                 
             eye_frame = frame[y1:y2, x1:x2]
             normalized_frame = cv2.resize(eye_frame, (IMG_WIDTH, IMG_HEIGHT))
-            normalized_frame = cv2.cvtColor(normalized_frame, cv2.COLOR_BGR2GRAY)
+            
+            # --- CORRECTION ---
+            # The line converting to grayscale is now removed to keep the 3 color channels.
             
             current_sequence.append(normalized_frame)
             
             if len(current_sequence) == SEQUENCE_LENGTH:
                 all_sequences.append(np.array(current_sequence))
-                all_labels.append(0)
+                all_labels.append(0) # Assuming label 0 for this dataset
                 current_sequence = []
 
     print(f"Extracted {len(all_sequences)} sequences from MPIIGaze.")
@@ -111,7 +111,9 @@ def main():
 
     X_final = np.concatenate(X_data, axis=0)
     y_final = np.concatenate(y_data, axis=0)
-    X_final = np.expand_dims(X_final, axis=-1)
+    
+    # --- CORRECTION ---
+    # The expand_dims line is removed as it's not needed for 3-channel color images.
 
     dataset_path = os.path.join(PROCESSED_DATA_DIR, "tier1_dataset.npz")
     np.savez_compressed(dataset_path, X=X_final, y=y_final)
