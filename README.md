@@ -1,79 +1,104 @@
-# NeuroSight 🧠
+# NeuroSight 
 
-A neural network-based brain activity analysis platform that helps researchers and clinicians analyze, predict, and visualize complex brain data.
+A neural network–powered brain activity analysis platform for researchers and clinicians to preprocess data, run ML inference, and visualize results via a modern web UI.
 
 ## Project Structure
 
 ```
 NeuroSight/
 ├── backend/
-│   └── api.py              # FastAPI server for handling predictions
-├── frontend/
-│   └── app.py              # Streamlit dashboard for visualization
+│   └── api.py
+├── frontend/                      # React + Vite web application
+│   ├── index.html
+│   ├── package.json
+│   ├── vite.config.js
+│   ├── public/
+│   │   ├── vite.svg
+│   │   └── model_web/
+│   └── src/
+│       ├── main.jsx
+│       ├── App.jsx
+│       ├── index.css
+│       ├── App.css
+│       ├── assets/
+│       ├── components/
+│       ├── hooks/
+│       └── utils/
 ├── ml/
-│   ├── model.py            # Keras/TensorFlow model architecture
-│   ├── train.py            # Script to train the neural network model
-│   ├── predict.py          # Functions to run inference
-│   └── neurosight_model.h5 # Trained model file (created after training)
+│   ├── model.py
+│   ├── predict.py
+│   └── train.py
 ├── data_processing/
-│   └── preprocess.py       # Data cleaning and preparation scripts
-└── requirements.txt        # Project dependencies
+│   └── preprocess.py
+├── data/
+├── src/                           # Root-level assets (currently CSS and empty dirs)
+│   ├── components/
+│   ├── hooks/
+│   └── index.css
+├── requirements.txt
+├── .gitignore
+└── README.md
 ```
 
 ## Features
 
-- 🧠 **Neural Network Models**: LSTM and ConvLSTM architectures for brain activity prediction
-- 📊 **Interactive Dashboard**: Streamlit-based visualization interface
-- 🔄 **Data Preprocessing**: Comprehensive data cleaning and preparation pipeline
-- 🚀 **REST API**: FastAPI backend for scalable predictions
-- 📈 **Real-time Visualization**: Interactive plots and charts for brain activity analysis
-- 🔧 **Flexible Input**: Support for CSV, JSON, and other data formats
+- **Neural Models**: LSTM/ConvLSTM-based architectures for time-series brain activity
+- **FastAPI Backend**: Production-ready REST API for preprocessing and prediction
+- **React + Vite Frontend**: Modern, fast development experience for visualization
+- **Data Preprocessing**: Configurable pipeline for cleaning and normalization
+- **Real-time Visualization**: Interactive UI for exploring predictions
+- **Flexible I/O**: Support for CSV/JSON and extensible input adapters
+
+## Prerequisites
+
+- Python 3.10+
+- Node.js 18+ and npm
 
 ## Quick Start
 
-### 1. Installation
+### 1) Clone and set up
 
 ```bash
 # Clone the repository
 git clone <repository-url>
 cd NeuroSight
 
-# Install dependencies
+# (Optional) Create and activate a virtual environment
+python -m venv .venv
+# Windows
+.venv\Scripts\activate
+# macOS/Linux
+# source .venv/bin/activate
+
+# Install Python dependencies
 pip install -r requirements.txt
 ```
 
-### 2. Train the Model
+### 2) Run the backend (FastAPI)
 
 ```bash
-# Train with synthetic data (for testing)
-cd ml
-python train.py --data synthetic --epochs 50
-
-# Train with your own data
-python train.py --data /path/to/your/data.csv --epochs 100
+# From repo root
+uvicorn backend.api:app --host 0.0.0.0 --port 8000 --reload
 ```
 
-### 3. Start the Backend API
+- Backend will be available at: http://localhost:8000
+- Example endpoints: `GET /`, `POST /predict`
+
+### 3) Run the frontend (React + Vite)
 
 ```bash
-cd backend
-python api.py
-```
-
-The API will be available at `http://localhost:8000`
-
-### 4. Launch the Dashboard
-
-```bash
+# From repo root
 cd frontend
-streamlit run app.py
+npm install
+npm run dev
 ```
 
-The dashboard will be available at `http://localhost:8501`
+- Frontend dev server: the terminal will show a URL, typically http://localhost:5173
+- The frontend is expected to call the backend at http://localhost:8000 (configure as needed)
 
 ## Usage
 
-### Training a Model
+### Training a Model (Python)
 
 ```python
 from ml.model import NeuroSightModel
@@ -86,10 +111,10 @@ model.build_model()
 history = model.train(X_train, y_classification, y_regression, epochs=100)
 
 # Save model
-model.save_model('neurosight_model.h5')
+model.save_model('ml/neurosight_model.h5')
 ```
 
-### Making Predictions
+### Making Predictions (Python)
 
 ```python
 from ml.predict import predict_neural_activity
@@ -102,36 +127,23 @@ print(f"Predicted classes: {result['predicted_classes']}")
 print(f"Activity levels: {result['regression_predictions']}")
 ```
 
-### Data Preprocessing
+### Calling the Backend API
 
-```python
-from data_processing.preprocess import BrainDataPreprocessor
+- `GET /` — Health check
+- `POST /predict` — Upload an image (e.g., PNG/JPEG) and receive inference results
 
-# Create preprocessor
-preprocessor = BrainDataPreprocessor(
-    scaling_method='standard',
-    remove_outliers=True,
-    filter_noise=True
-)
+Example with `curl`:
 
-# Preprocess data
-result = preprocessor.preprocess(your_data)
-processed_data = result['data']
+```bash
+curl -X POST \
+  -F "file=@/path/to/image.png" \
+  http://localhost:8000/predict
 ```
 
-## API Endpoints
+## Data Formats
 
-- `GET /` - Health check
-- `GET /health` - Detailed health status
-- `POST /predict` - Upload data and get predictions
-- `POST /preprocess` - Preprocess data without prediction
-- `GET /models` - List available models
+### CSV
 
-## Data Format
-
-### Supported Input Formats
-
-**CSV Format:**
 ```csv
 time,region1,region2,region3,region4
 0,0.1,0.2,0.15,0.3
@@ -139,58 +151,65 @@ time,region1,region2,region3,region4
 2,0.15,0.22,0.18,0.28
 ```
 
-**JSON Format:**
+### JSON
+
 ```json
 {
-    "brain_activity": [
-        [0.1, 0.2, 0.15, 0.3],
-        [0.12, 0.18, 0.2, 0.25],
-        [0.15, 0.22, 0.18, 0.28]
-    ],
-    "regions": ["frontal", "parietal", "temporal", "occipital"]
+  "brain_activity": [
+    [0.1, 0.2, 0.15, 0.3],
+    [0.12, 0.18, 0.2, 0.25],
+    [0.15, 0.22, 0.18, 0.28]
+  ],
+  "regions": ["frontal", "parietal", "temporal", "occipital"]
 }
 ```
 
-## Model Architecture
-
-The NeuroSight model uses a multi-output neural network architecture:
-
-- **LSTM Layers**: Capture temporal patterns in brain activity
-- **Dense Layers**: Extract high-level features
-- **Dual Outputs**: 
-  - Classification: Predict activity type/class
-  - Regression: Predict activity intensity
-
 ## Development
 
-### Running Tests
+### Python tooling
 
 ```bash
+# Run tests
 pytest tests/
-```
 
-### Code Formatting
-
-```bash
+# Code formatting / linting
 black .
 flake8 .
 ```
+
+### Frontend tooling
+
+```bash
+# Lint (as configured in package.json)
+npm run lint
+
+# Build for production
+npm run build
+
+# Preview production build
+npm run preview
+```
+
+## Configuration
+
+- Backend CORS is enabled for development in `backend/api.py` using `CORSMiddleware`.
+- Frontend can be configured to point to a different backend URL via environment variables (e.g., `.env`, `.env.local`).
 
 ## Contributing
 
 1. Fork the repository
 2. Create a feature branch
-3. Make your changes
-4. Add tests
-5. Submit a pull request
+3. Make your changes with tests
+4. Run linting/formatting
+5. Open a pull request with a clear description
 
 ## License
 
-This project is licensed under the MIT License - see the LICENSE file for details.
+This project is licensed under the MIT License. See `LICENSE` for details.
 
 ## Acknowledgments
 
-- Built with TensorFlow/Keras for neural network modeling
-- FastAPI for high-performance API development
-- Streamlit for interactive dashboard creation
-- Scikit-learn for data preprocessing utilities
+- TensorFlow/Keras for neural modeling
+- FastAPI for high-performance APIs
+- React + Vite for the web UI
+- Scikit-learn for preprocessing utilities
