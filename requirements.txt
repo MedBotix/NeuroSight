@@ -1,23 +1,10 @@
 # Backend
-fastapi
-uvicorn[standard]
-python-multipart
+fastapi==0.111.0
+uvicorn[standard]==0.29.0
 
 # Machine Learning & Computer Vision
-tensorflow
-opencv-python
-mediapipe
-scikit-learn
-numpy
-
-# Data Processing
-pandas
-matplotlib
-seaborn
-
-# Web Framework
-streamlit
-requests
-
-# Development
-pytest
+tensorflow==2.16.1
+numpy==1.26.4
+opencv-python==4.9.0.80
+mediapipe==0.10.14
+scikit-learn==1.4.2
