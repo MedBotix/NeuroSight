@@ -7,38 +7,91 @@
   color: white;
   padding: 1rem;
 }
-.card {
-  width: 100%;
-  max-width: 56rem;
-  background-color: #1f2937;
-  border-radius: 0.5rem;
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-  padding: 2rem;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 2rem;
-}
-@media (min-width: 768px) { .card { flex-direction: row; } }
 .videoContainer {
   position: relative;
   width: 100%;
 }
 @media (min-width: 768px) { .videoContainer { width: 50%; } }
+
 .video {
   border-radius: 0.5rem;
   width: 100%;
 }
+
+/* Overlay root to host stimulus elements */
+.overlayRoot {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+/* Status badge over video */
 .statusBadge {
   position: absolute;
   top: 0.5rem;
   left: 0.5rem;
   background-color: #3b82f6;
   font-size: 0.75rem;
-  font-weight: bold;
-  padding: 0.25rem 0.75rem;
+  font-weight: 700;
+  padding: 0.25rem 0.6rem;
   border-radius: 9999px;
 }
+
+/* Phase tag (top-right) */
+.phaseTag {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  background: rgba(59, 130, 246, 0.85);
+  color: white;
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 0.2rem 0.6rem;
+  border-radius: 9999px;
+}
+
+/* High-contrast stimulus dot positioned via left/top percentages */
+.stimulusDot {
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  margin-left: -7px; /* center dot horizontally */
+  margin-top: -7px;  /* center dot vertically */
+  background-color: #fef08a; /* yellow */
+  border: 2px solid #111827; /* dark outline for contrast */
+  border-radius: 9999px;
+  box-shadow: 0 0 10px rgba(250, 204, 21, 0.65);
+}
+
+/* Red gaze dot (user's estimated gaze) */
+.gazeDot {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  margin-left: -5px;
+  margin-top: -5px;
+  background-color: #ef4444; /* red */
+  border: 2px solid #111827;
+  border-radius: 9999px;
+  box-shadow: 0 0 8px rgba(239, 68, 68, 0.6);
+}
+
+/* Face alignment guides (shown during calibration) */
+.faceGuides {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.cornerTL, .cornerTR, .cornerBL, .cornerBR {
+  position: absolute;
+  width: 40px;
+  height: 40px;
+  border-color: rgba(57, 211, 159, 0.8);
+}
+.cornerTL { top: 8%; left: 8%; border-left: 3px solid; border-top: 3px solid; }
+.cornerTR { top: 8%; right: 8%; border-right: 3px solid; border-top: 3px solid; }
+.cornerBL { bottom: 8%; left: 8%; border-left: 3px solid; border-bottom: 3px solid; }
+.cornerBR { bottom: 8%; right: 8%; border-right: 3px solid; border-bottom: 3px solid; }
 .resultsContainer {
   width: 100%;
 }

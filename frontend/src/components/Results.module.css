@@ -1,0 +1,197 @@
+.container {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+}
+
+.card {
+  background: radial-gradient(circle at center, rgba(57, 211, 159, 0.05) 0%, rgba(13, 17, 23, 0.8) 100%);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(57, 211, 159, 0.1);
+  border-radius: 24px;
+  padding: 3rem 2rem;
+  text-align: center;
+  max-width: 600px;
+  width: 100%;
+  box-shadow: 
+    0 20px 25px -5px rgba(0, 0, 0, 0.3),
+    0 10px 10px -5px rgba(0, 0, 0, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+.header {
+  margin-bottom: 2rem;
+}
+
+.icon {
+  margin-bottom: 1rem;
+  filter: drop-shadow(0 0 10px rgba(57, 211, 159, 0.3));
+}
+
+.title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #39D39F;
+  margin-bottom: 0.5rem;
+  text-shadow: 0 0 20px rgba(57, 211, 159, 0.3);
+}
+
+.subtitle {
+  font-size: 1rem;
+  color: #8B949E;
+  opacity: 0.9;
+}
+
+.scoreSection {
+  margin-bottom: 2rem;
+}
+
+.scoreContainer {
+  margin-bottom: 1.5rem;
+}
+
+.scoreLabel {
+  font-size: 0.875rem;
+  color: #8B949E;
+  margin-bottom: 0.5rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.scoreValue {
+  font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Roboto Mono', monospace;
+  font-size: 4rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  text-shadow: 0 0 30px currentColor;
+}
+
+.scoreCategory {
+  font-size: 1.125rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.progressContainer {
+  margin-bottom: 2rem;
+}
+
+.progressBar {
+  width: 100%;
+  height: 8px;
+  background: rgba(139, 148, 158, 0.2);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.progressFill {
+  height: 100%;
+  border-radius: 4px;
+  transition: all 0.3s ease;
+}
+
+.observations {
+  margin-bottom: 2rem;
+  text-align: left;
+}
+
+.observationsTitle {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #E6EDF3;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+.observationsList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.observation {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem;
+  background: rgba(139, 148, 158, 0.05);
+  border: 1px solid rgba(139, 148, 158, 0.1);
+  border-radius: 8px;
+  color: #E6EDF3;
+  font-size: 0.95rem;
+}
+
+.observationIcon {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.disclaimer {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: 1.5rem;
+  background: rgba(139, 148, 158, 0.05);
+  border: 1px solid rgba(139, 148, 158, 0.1);
+  border-radius: 12px;
+  margin-bottom: 2rem;
+  text-align: left;
+}
+
+.disclaimerIcon {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  margin-top: 0.125rem;
+}
+
+.disclaimer p {
+  font-size: 0.875rem;
+  color: #8B949E;
+  line-height: 1.5;
+}
+
+.finishButton {
+  background: linear-gradient(135deg, #39D39F 0%, #2BC4A0 100%);
+  color: #0D1117;
+  border: none;
+  padding: 1rem 2rem;
+  border-radius: 12px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 
+    0 10px 20px rgba(57, 211, 159, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  transition: all 0.2s ease;
+}
+
+.finishButton:hover {
+  box-shadow: 
+    0 15px 30px rgba(57, 211, 159, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+
+@media (max-width: 640px) {
+  .card {
+    padding: 2rem 1.5rem;
+    margin: 1rem;
+  }
+  
+  .title {
+    font-size: 1.75rem;
+  }
+  
+  .scoreValue {
+    font-size: 3rem;
+  }
+  
+  .disclaimer {
+    padding: 1rem;
+  }
+}

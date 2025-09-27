@@ -1,13 +1,16 @@
 import React from 'react';
 import { CameraFeed } from './components/CameraFeed';
-import styles from './components/CameraFeed.module.css';
+import { StimulusProvider } from './context/StimulusContext';
 import './index.css';
 
 function App() {
   return (
-    <div className={styles.container}>
-      <CameraFeed />
-    </div>
+    <StimulusProvider>
+      <div className="app">
+        <CameraFeed />
+      </div>
+    </StimulusProvider>
   );
 }
+
 export default App;
