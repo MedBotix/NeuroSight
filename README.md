@@ -1,12 +1,25 @@
-# NeuroSight 
+# NeuroSight – On‑Device Eye‑Movement Screening
 
-A neural network–powered brain activity analysis platform for researchers and clinicians to preprocess data, run ML inference, and visualize results via a modern web UI.
+Privacy‑first, on‑device eye‑movement screening in the browser using TensorFlow.js. Users follow a moving dot; the app computes a live screening signal and a short‑window final indicator at the end. No video frames leave the device.
+
+## At a Glance (Minimal)
+
+- **Run**
+  - `cd frontend && npm install && npm run dev`
+  - Open the shown URL (e.g., http://localhost:5173) and allow camera.
+- **Model**
+  - Place your TF.js model at `frontend/public/model_web/model.json` (+ shards).
+  - Preprocessing defaults: `[64,64,3]` frames → `[1,16,64,64,3]` stacked.
+- **Use**
+  - Click “Begin Screening” → Align → Follow the dot → View results.
+- **Privacy**
+  - All processing is on-device; nothing is uploaded. This is not a diagnosis.
 
 ## Project Structure
 
 ```
 NeuroSight/
-├── backend/
+├── backend/                      # Optional/legacy FastAPI (not required for on‑device screening)
 │   └── api.py
 ├── frontend/                      # React + Vite web application
 │   ├── index.html
@@ -24,7 +37,7 @@ NeuroSight/
 │       ├── components/
 │       ├── hooks/
 │       └── utils/
-├── ml/
+├── ml/                           # Optional/legacy Python training utilities
 │   ├── model.py
 │   ├── predict.py
 │   └── train.py
@@ -42,49 +55,32 @@ NeuroSight/
 
 ## Features
 
-- **Neural Models**: LSTM/ConvLSTM-based architectures for time-series brain activity
-- **FastAPI Backend**: Production-ready REST API for preprocessing and prediction
-- **React + Vite Frontend**: Modern, fast development experience for visualization
-- **Data Preprocessing**: Configurable pipeline for cleaning and normalization
-- **Real-time Visualization**: Interactive UI for exploring predictions
-- **Flexible I/O**: Support for CSV/JSON and extensible input adapters
+- **On‑device TF.js**: Runs entirely in the browser; no uploads
+- **Stimulus controller**: Fixation → Saccades → Smooth Pursuit (20–30s)
+- **Multi‑step wizard UI**: Welcome → Align → Testing → Results (glassmorphism cards)
+- **Live overlays**: Face guides, eye boxes, stimulus dot, optional red gaze dot
+- **Metrics & signal**: Live screening signal + short‑window final indicator
+- **Trace chart**: Target vs. gaze timeline + risk timeline (lightweight canvas)
+- **Privacy‑first**: Clear, neutral copy; “Screen, don’t diagnose” disclaimer
 
 ## Prerequisites
 
-- Python 3.10+
 - Node.js 18+ and npm
+- (Optional) Python 3.10+ if using legacy backend/training scripts
 
-## Quick Start
+## Quick Start (On‑Device Only)
 
 ### 1) Clone and set up
 
 ```bash
 # Clone the repository
-git clone <repository-url>
+git clone https://github.com/MedBotix/NeuroSight
 cd NeuroSight
 
-# (Optional) Create and activate a virtual environment
-python -m venv .venv
-# Windows
-.venv\Scripts\activate
-# macOS/Linux
-# source .venv/bin/activate
-
-# Install Python dependencies
-pip install -r requirements.txt
+# (Optional) If you plan to use Python backend/training, see Legacy section below
 ```
 
-### 2) Run the backend (FastAPI)
-
-```bash
-# From repo root
-uvicorn backend.api:app --host 0.0.0.0 --port 8000 --reload
-```
-
-- Backend will be available at: http://localhost:8000
-- Example endpoints: `GET /`, `POST /predict`
-
-### 3) Run the frontend (React + Vite)
+### 2) Run the frontend (React + Vite)
 
 ```bash
 # From repo root
@@ -93,12 +89,33 @@ npm install
 npm run dev
 ```
 
-- Frontend dev server: the terminal will show a URL, typically http://localhost:5173
-- The frontend is expected to call the backend at http://localhost:8000 (configure as needed)
+- Open the dev server URL (typically http://localhost:5173)
+- Allow camera permission when prompted
+- Click **Begin Screening** and follow the dot with your eyes
+
+### 3) Model Placement
+
+- Place your TF.js model at `frontend/public/model_web/model.json` (+ shard files).
+- Preprocessing expects `[64,64,3]` frames, normalized to `[0,1]`, stacked as `[1, 16, 64, 64, 3]`.
+  - Adjust in `frontend/src/utils/preprocessing.js` if your model differs.
 
 ## Usage
 
-### Training a Model (Python)
+### Product flow (What the user sees)
+
+1. **Welcome**: Begin Screening button + privacy assurance.
+2. **Align**: Live camera preview with corner guides and eye boxes; center your face.
+3. **Testing**: Dot stimulus (fixation, saccades, pursuit) with progress bar.
+4. **Results**: Live gauge + short‑window final indicator, neutral summary, and disclaimer.
+
+### Real model alignment
+
+- Confirm your Python/TF preprocessing matches the browser path:
+  - `MODEL_INPUT_WIDTH`, `MODEL_INPUT_HEIGHT`, `SEQUENCE_LENGTH` in `frontend/src/utils/preprocessing.js`
+  - Normalization and color space (browser RGB) match your training
+  - Cropping (full frame vs eye crops) if your model expects it
+
+### Training a Model (Python, Optional/Legacy)
 
 ```python
 from ml.model import NeuroSightModel
@@ -127,7 +144,7 @@ print(f"Predicted classes: {result['predicted_classes']}")
 print(f"Activity levels: {result['regression_predictions']}")
 ```
 
-### Calling the Backend API
+### Calling the Backend API (Optional/Legacy)
 
 - `GET /` — Health check
 - `POST /predict` — Upload an image (e.g., PNG/JPEG) and receive inference results
@@ -140,7 +157,7 @@ curl -X POST \
   http://localhost:8000/predict
 ```
 
-## Data Formats
+## Data Formats (Optional/Legacy)
 
 ### CSV
 
@@ -203,13 +220,17 @@ npm run preview
 4. Run linting/formatting
 5. Open a pull request with a clear description
 
-## License
-
-This project is licensed under the MIT License. See `LICENSE` for details.
 
 ## Acknowledgments
 
-- TensorFlow/Keras for neural modeling
-- FastAPI for high-performance APIs
+- TensorFlow.js for on‑device inference
+- FastAPI (optional) for server‑side workflows
 - React + Vite for the web UI
-- Scikit-learn for preprocessing utilities
+- Scikit‑learn/TensorFlow (Python) for training pipelines
+
+---
+
+### Privacy & Disclaimer
+
+- All screening runs on‑device in your browser; no frames are uploaded.
+- This is a preliminary screening signal and **not** a medical diagnosis.

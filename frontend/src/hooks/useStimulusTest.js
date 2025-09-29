@@ -6,6 +6,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 export const useStimulusTest = () => {
   const [running, setRunning] = useState(false);
   const [phase, setPhase] = useState('idle'); // idle | calibrate | fixation | saccade | pursuit | finished
+  const [progress, setProgress] = useState(0); // 0..1 during run
   const [target, setTarget] = useState({ x: 0.5, y: 0.5 }); // normalized
   const startTimeRef = useRef(0);
   const rafRef = useRef(null);
@@ -22,6 +23,14 @@ export const useStimulusTest = () => {
     if (rafRef.current) cancelAnimationFrame(rafRef.current);
     setRunning(false);
     setPhase('finished');
+  }, []);
+
+  const reset = useCallback(() => {
+    if (rafRef.current) cancelAnimationFrame(rafRef.current);
+    setRunning(false);
+    setPhase('idle');
+    setProgress(0);
+    setTarget({ x: 0.5, y: 0.5 });
   }, []);
 
   const start = useCallback(() => {
@@ -45,6 +54,7 @@ export const useStimulusTest = () => {
         stop();
         return;
       }
+      setProgress(Math.max(0, Math.min(1, t / totalDurationMs)));
       // Determine current segment
       let acc = 0;
       let current = schedule[0];
@@ -87,7 +97,7 @@ export const useStimulusTest = () => {
     return () => { if (rafRef.current) cancelAnimationFrame(rafRef.current); };
   }, [running, phase, stop]);
 
-  return { running, phase, target, start, stop };
+  return { running, phase, target, start, stop, reset, progress };
 };
 
 export default useStimulusTest;
